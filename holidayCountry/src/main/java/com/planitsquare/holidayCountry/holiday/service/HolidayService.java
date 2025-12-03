@@ -10,6 +10,7 @@ import com.planitsquare.holidayCountry.holiday.dto.HolidayRespDto;
 import com.planitsquare.holidayCountry.holiday.entity.Holiday;
 import com.planitsquare.holidayCountry.holiday.repository.HolidayRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -61,16 +62,22 @@ public class HolidayService {
 
     @Transactional(readOnly = false)
     public List<HolidayRespDto> refresh(Integer year, String countryCode) {
-        //국가 확인
+
+        log.info("[Holiday][Refresh] 시작 - year={}, country={}", year, countryCode);
         Country country = countryRepository.findByCountryCode(countryCode)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESOURCE_NOT_FOUND));
-        //외부 api 호출, 동기화..
+
+        log.info("[Holiday][Refresh] 외부 API 호출 - year={}, country={}", year, countryCode);
         List<NagerHolidayDto> newPublicHolidays = nagerClient.getPublicHolidays(year, countryCode);
-        holidayRepository.removeByCountryAndYear(countryCode, year);
+        log.info("[Holiday][Refresh] 외부 API 응답 수신 - count={}", newPublicHolidays.size());
+
+        List<Holiday> holidays = holidayRepository.findByCountryAndYear(countryCode, year);
+        holidayRepository.deleteAll(holidays);
 
         List<Holiday> holidayList = newPublicHolidays.stream().map(dto -> Holiday.of(dto, country)).toList();
-        List<Holiday> holidays = holidayRepository.saveAll(holidayList);
-        return holidays.stream().map(HolidayRespDto::from).toList();
+        List<Holiday> newHolidays = holidayRepository.saveAll(holidayList);
+        log.info("[Holiday][Refresh] 적재 완료 - savedCount={}", newHolidays.size());
+        return newHolidays.stream().map(HolidayRespDto::from).toList();
 
     }
 
@@ -80,7 +87,8 @@ public class HolidayService {
         boolean exists = countryRepository.existsByCountryCode(countryCode);
         if(!exists) throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);
 
-        holidayRepository.removeByCountryAndYear(countryCode, year);
+        List<Holiday> holidays = holidayRepository.findByCountryAndYear(countryCode, year);
+        holidayRepository.deleteAll(holidays);
 
     }
 
