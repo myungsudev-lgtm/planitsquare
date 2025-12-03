@@ -146,7 +146,7 @@ OpenAPI JSON 노출 URL : http://localhost:8080/v3/api-docs
 
 **6. 기술 스택**
    항목 내용
-   Framework Spring Boot 3.2.5
+   Framework Spring Boot 3.4.0
    ORM JPA, Hibernate, QueryDSL
    DB H2
    API Docs Springdoc OpenAPI (Swagger UI)
