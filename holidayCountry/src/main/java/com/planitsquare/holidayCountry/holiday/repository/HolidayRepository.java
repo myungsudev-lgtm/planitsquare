@@ -2,7 +2,6 @@ package com.planitsquare.holidayCountry.holiday.repository;
 
 import com.planitsquare.holidayCountry.holiday.entity.Holiday;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -18,11 +17,12 @@ public interface HolidayRepository extends JpaRepository<Holiday,Long>, HolidayR
     """)
     List<String> findAllKeysByCountryAndYear(String countryCode, int year);
 
-    @Modifying
     @Query("""
-    delete from Holiday h
-    where h.country.countryCode = :countryCode
-      and (:year is null or YEAR(h.date) = :year)
-""")
-    void removeByCountryAndYear(String countryCode, Integer year);
+        select h
+        from Holiday h
+        where h.country.countryCode = :countryCode
+          and (:year is null or year(h.date) = :year)
+    """)
+    List<Holiday> findByCountryAndYear(String countryCode, Integer year);
+
 }
