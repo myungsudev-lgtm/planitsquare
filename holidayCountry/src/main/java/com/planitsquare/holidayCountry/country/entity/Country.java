@@ -1,6 +1,7 @@
 package com.planitsquare.holidayCountry.country.entity;
 
 import com.planitsquare.holidayCountry.country.dto.CountryReqDto;
+import com.planitsquare.holidayCountry.external.dto.NagerCountryDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,14 @@ public class Country {
     public static Country of(CountryReqDto dto){
         Country c = new Country();
         c.countryName = dto.getCountryName();
+        c.countryCode = dto.getCountryCode();
+        c.createdAt = LocalDateTime.now();
+        return c;
+    }
+
+    public static Country of(NagerCountryDto dto){
+        Country c = new Country();
+        c.countryName = dto.getName();
         c.countryCode = dto.getCountryCode();
         c.createdAt = LocalDateTime.now();
         return c;

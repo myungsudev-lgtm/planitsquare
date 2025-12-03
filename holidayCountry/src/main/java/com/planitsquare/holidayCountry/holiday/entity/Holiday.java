@@ -1,13 +1,13 @@
 package com.planitsquare.holidayCountry.holiday.entity;
 
 import com.planitsquare.holidayCountry.country.entity.Country;
+import com.planitsquare.holidayCountry.external.dto.NagerHolidayDto;
 import com.planitsquare.holidayCountry.holiday.dto.HolidayReqDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
         name = "holiday",
         uniqueConstraints = @UniqueConstraint(
                 name = "uk_holiday_country_date",
-                columnNames = {"country_id", "date", "holiday_name"}
+                columnNames = {"country_id", "date", "holiday_name", "counties"}
         )
 )
 @Getter
@@ -51,6 +51,7 @@ public class Holiday {
             joinColumns = @JoinColumn(name = "holiday_id")
     )
     private List<String> types = new ArrayList<>();
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -66,6 +67,21 @@ public class Holiday {
         h.fixed = dto.getFixed() != null ? dto.getFixed() : false;
         h.global = dto.getGlobal() != null ? dto.getGlobal() : false;
         h.counties = dto.getCounties();
+        h.launchYear = dto.getLaunchYear();
+        h.types = dto.getTypes() != null ? dto.getTypes() : new ArrayList<>();
+        h.createdAt = LocalDateTime.now();
+        return h;
+    }
+
+    public static Holiday of(NagerHolidayDto dto, Country country){
+        Holiday h = new Holiday();
+        h.date = dto.getDate();
+        h.localName = dto.getLocalName();
+        h.name = dto.getName();
+        h.country = country;
+        h.fixed = dto.getFixed() != null ? dto.getFixed() : false;
+        h.global = dto.getGlobal() != null ? dto.getGlobal() : false;
+        h.counties = dto.getCounties() != null ? String.join(",", dto.getCounties()) : null;
         h.launchYear = dto.getLaunchYear();
         h.types = dto.getTypes() != null ? dto.getTypes() : new ArrayList<>();
         h.createdAt = LocalDateTime.now();
