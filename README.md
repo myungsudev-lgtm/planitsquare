@@ -6,7 +6,7 @@ Planitsquare Subject Public Github Repository
 
 Gradle 빌드 명령어 : ./gradlew clean build
 
-애플리케이션 실행 명령어 : java -jar build/libs/holidayCountry.jar
+애플리케이션 실행 명령어 : java -jar build/libs/holidayCountry-0.0.1-SNAPSHOT.jar
 
 Swagger 접속 URL : http://localhost:8080/swagger-ui/index.html
 
