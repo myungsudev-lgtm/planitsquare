@@ -25,18 +25,5 @@ public class CountryApiController {
         return countryService.findByCountryCode(countryCode);
     }
 
-    @PutMapping("{countryCode}")
-    public ResponseEntity<?> updateCountryByCountryCode(
-            @PathVariable String countryCode,
-            @RequestBody CountryReqDto reqDto
-    ){
-        CountryRespDto result = countryService.update(countryCode, reqDto);
-        return ResponseEntity.ok(result);
-    }
 
-    @DeleteMapping("{countryCode}")
-    public ResponseEntity<?> deleteCountryByCountryCode(@PathVariable String countryCode){
-        CountryRespDto delete = countryService.delete(countryCode);
-        return ResponseEntity.ok(delete);
-    }
 }

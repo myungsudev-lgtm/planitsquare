@@ -41,18 +41,5 @@ public class CountryService {
         return CountryRespDto.from(country);
     }
 
-    @Transactional(readOnly = false)
-    public CountryRespDto update(String countryCode, CountryReqDto reqDto) {
-        Country country = countryRepository.findByCountryCode(countryCode).
-                orElseThrow(() -> new CustomException(ErrorCode.RESOURCE_NOT_FOUND));
-        country.update(reqDto);
-        return CountryRespDto.from(country);
-    }
-    @Transactional(readOnly = false)
-    public CountryRespDto delete(String countryCode) {
-        Country country = countryRepository.findByCountryCode(countryCode).
-                orElseThrow(() -> new CustomException(ErrorCode.RESOURCE_NOT_FOUND));
-        countryRepository.delete(country);
-        return CountryRespDto.from(country);
-    }
+
 }
