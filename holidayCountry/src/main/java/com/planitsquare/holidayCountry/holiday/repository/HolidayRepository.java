@@ -24,5 +24,5 @@ public interface HolidayRepository extends JpaRepository<Holiday,Long>, HolidayR
     where h.country.countryCode = :countryCode
       and (:year is null or YEAR(h.date) = :year)
 """)
-    void deleteByCountryAndYear(String countryCode, Integer year);
+    void removeByCountryAndYear(String countryCode, Integer year);
 }

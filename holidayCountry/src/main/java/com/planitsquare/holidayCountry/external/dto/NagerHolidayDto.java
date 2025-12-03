@@ -1,5 +1,6 @@
 package com.planitsquare.holidayCountry.external.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,10 @@ public class NagerHolidayDto {
     private String countryCode;
     private Boolean fixed;
     private Boolean global;
-    private String counties;
+
+    private List<String> counties;
+
     private Integer launchYear;
+
     private List<String> types;
 }

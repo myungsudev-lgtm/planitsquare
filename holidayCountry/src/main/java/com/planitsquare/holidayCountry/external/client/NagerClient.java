@@ -6,7 +6,9 @@ import com.planitsquare.holidayCountry.global.exception.ErrorCode;
 import com.planitsquare.holidayCountry.global.exception.ExternalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,7 +25,6 @@ public class NagerClient {
     private static final String HOLIDAY_URL = "https://date.nager.at/api/v3/PublicHolidays/";
 
     public List<NagerCountryDto> getAvailableCountries(){
-        //api 호출~~
         log.info("[NagerClient] getAvailableCountries url={}", COUNTRY_URL);
         try{
             NagerCountryDto[] nagerCountryDtos = restTemplate.getForObject(COUNTRY_URL, NagerCountryDto[].class);
@@ -34,7 +35,11 @@ public class NagerClient {
             List<NagerCountryDto> result = Arrays.stream(nagerCountryDtos).toList();
             log.debug("[NagerClient] getAvailableCountries size ={}",result.size());
             return result;
-        }catch (HttpServerErrorException e) {
+        } catch (HttpMessageNotReadableException e) {
+            throw new ExternalException(ErrorCode.EXTERNAL_INVALID_RESPONSE, e); // json직렬화 실패...
+        } catch (HttpClientErrorException e) {
+            throw new ExternalException(ErrorCode.EXTERNAL_BAD_REQUEST, e); // 클라 잘못된 요청..
+        } catch (HttpServerErrorException e) {
             throw new ExternalException(ErrorCode.EXTERNAL_SERVER_ERROR, e);
         } catch (Exception e) {
             throw new ExternalException(ErrorCode.EXTERNAL_UNKNOWN, e);
@@ -42,7 +47,6 @@ public class NagerClient {
     }
 
     public List<NagerHolidayDto> getPublicHolidays(int year , String countryCode){
-        //api 호출
         String url = HOLIDAY_URL + year + "/" + countryCode;
         log.info("[NagerClient] getPublicHoliday url = {}",url );
         try {
@@ -57,6 +61,10 @@ public class NagerClient {
 
             return result;
 
+        } catch (HttpMessageNotReadableException e) {
+            throw new ExternalException(ErrorCode.EXTERNAL_INVALID_RESPONSE, e);
+        } catch (HttpClientErrorException e) {
+            throw new ExternalException(ErrorCode.EXTERNAL_BAD_REQUEST, e); // 클라 잘못된 요청..
         } catch (HttpServerErrorException e) {
             throw new ExternalException(ErrorCode.EXTERNAL_SERVER_ERROR, e);
         } catch (Exception e) {

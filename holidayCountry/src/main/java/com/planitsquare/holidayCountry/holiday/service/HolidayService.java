@@ -66,7 +66,7 @@ public class HolidayService {
                 .orElseThrow(() -> new CustomException(ErrorCode.RESOURCE_NOT_FOUND));
         //외부 api 호출, 동기화..
         List<NagerHolidayDto> newPublicHolidays = nagerClient.getPublicHolidays(year, countryCode);
-        holidayRepository.deleteByCountryAndYear(countryCode, year);
+        holidayRepository.removeByCountryAndYear(countryCode, year);
 
         List<Holiday> holidayList = newPublicHolidays.stream().map(dto -> Holiday.of(dto, country)).toList();
         List<Holiday> holidays = holidayRepository.saveAll(holidayList);
@@ -80,7 +80,7 @@ public class HolidayService {
         boolean exists = countryRepository.existsByCountryCode(countryCode);
         if(!exists) throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);
 
-        holidayRepository.deleteByCountryAndYear(countryCode, year);
+        holidayRepository.removeByCountryAndYear(countryCode, year);
 
     }
 
