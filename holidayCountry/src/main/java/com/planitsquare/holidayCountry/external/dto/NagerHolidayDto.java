@@ -18,7 +18,10 @@ public class NagerHolidayDto {
     private String countryCode;
     private Boolean fixed;
     private Boolean global;
+
     private List<String> counties;
+
     private Integer launchYear;
+
     private List<String> types;
 }
