@@ -19,11 +19,9 @@ public class NagerHolidayDto {
     private Boolean fixed;
     private Boolean global;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<String> counties;
 
     private Integer launchYear;
 
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<String> types;
 }

@@ -9,4 +9,5 @@ public interface CountryRepository extends JpaRepository<Country,Long> {
 
     Optional<Country> findByCountryCode(String countryCode);
 
+    boolean existsByCountryCode(String countryCode);
 }
