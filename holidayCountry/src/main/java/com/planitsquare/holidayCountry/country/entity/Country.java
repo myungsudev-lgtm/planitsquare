@@ -43,9 +43,4 @@ public class Country {
         return c;
     }
 
-    public void update(CountryReqDto dto) {
-        this.countryName = dto.getCountryName();
-        this.countryCode = dto.getCountryCode();
-        this.updatedAt = LocalDateTime.now();
-    }
 }
